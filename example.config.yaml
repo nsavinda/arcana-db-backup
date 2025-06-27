@@ -1,0 +1,19 @@
+database:
+  host: localhost
+  port: 4002
+  user: postgres
+  password: postgres
+  dbname: mydb
+
+backup:
+  public_key: ./public.pem
+  destination: ./backup
+
+
+storage:
+  provider: s3
+  bucket: my-bucket
+  region: us-east-1
+  access_key: 
+  secret_key: 
+  endpoint: https://nyc3.digitaloceanspaces.com  # Use S3 endpoint or DigitalOcean Spaces endpoint

@@ -1,0 +1,10 @@
+backup/
+public.pem
+private.pem
+*.key
+*.enc
+*.sql
+*.log
+*.tmp
+*.bak
+config.yaml
