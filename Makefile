@@ -7,8 +7,8 @@ keygen:
 # all: 
 
 # make run
-run:
-	go run main.go
+run: build
+	./backup-service
 
 # make build
 build:
