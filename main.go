@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"backup-service/config"
-	"backup-service/database"
-	"backup-service/encryption"
-	"backup-service/storage"
+	"arcana-db-backup/config"
+	"arcana-db-backup/database"
+	"arcana-db-backup/encryption"
+	"arcana-db-backup/storage"
 	"time"
 )
 

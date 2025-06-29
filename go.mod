@@ -1,4 +1,4 @@
-module backup-service
+module arcana-db-backup
 
 go 1.24.4
 
