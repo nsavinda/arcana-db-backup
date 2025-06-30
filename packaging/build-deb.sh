@@ -44,6 +44,6 @@ done
 dpkg-deb --build dist/$APPNAME
 
 # 7. Move and name artifact
-DEB_NAME=${APPNAME}_${VERSION}_${ARCH}.deb
+DEB_NAME=${APPNAME}_v${VERSION}_${ARCH}.deb
 mv dist/$APPNAME.deb $DEB_NAME
 echo "Built: $DEB_NAME"
