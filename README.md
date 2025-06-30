@@ -1,4 +1,4 @@
-# Database Backup Tool
+# Arcana DB Backup Tool
 
 A modular, secure Go-based tool for **database backup, encryption, and compression** with easy restore and cloud upload options.
 
@@ -46,7 +46,7 @@ Your public key (`public.pem`) is used for encryption.
 
 ### 3. **Configure**
 
-Edit `config.yaml`:
+Edit `/etc/arcanadbbackup/config.yaml` or create a custom config file:
 
 ```yaml
 database:
@@ -129,7 +129,7 @@ psql -U youruser -d yourdb -f <backupfile.sql>
   * `database` – handles PostgreSQL backup
   * `encryption` – handles hybrid encryption and compression
   * `storage` – (optional) handles S3/Spaces uploads
-  
+
 * You can extend it to support other databases or storage providers.
 ---
 
