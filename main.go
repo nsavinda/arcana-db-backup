@@ -16,7 +16,7 @@ import (
 
 func encryptMode() {
 	// 1. Load config
-	cfg, err := config.LoadConfig("config.yaml")
+	cfg, err := config.LoadConfig("/etc/arcanadbbackup/config.yaml")
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
@@ -40,7 +40,7 @@ func encryptMode() {
 	if err := database.Dump(dbCfg, dumpFile); err != nil {
 		log.Fatalf("Database dump failed: %v", err)
 	}
-	// defer os.Remove(dumpFile)
+	defer os.Remove(dumpFile)
 
 	// 3. Generate random AES key
 	aesKey, err := encryption.GenerateRandomKey(32) // 32 bytes for AES-256
@@ -90,16 +90,37 @@ func encryptMode() {
 
 	if err := storage.Upload(s3Cfg, encFile); err != nil {
 		log.Fatalf("Upload of encrypted backup failed: %v", err)
+	} else {
+		fmt.Printf("Successfully uploaded encrypted backup: %s\n", encFile)
 	}
 	if err := storage.Upload(s3Cfg, keyFile); err != nil {
 		log.Fatalf("Upload of encrypted key failed: %v", err)
+	} else {
+		fmt.Printf("Successfully uploaded encrypted key: %s\n", keyFile)
 	}
+
+	// upload status print
 
 	fmt.Println("Encrypted backup and key generated successfully:")
 	fmt.Println("  Encrypted dump:", encFile)
 	fmt.Println("  Encrypted key: ", keyFile)
 	fmt.Println("To decrypt: ")
 	fmt.Printf("  %s decrypt -i <privatekeyfile> %s\n", os.Args[0], encFile)
+
+	if !cfg.Backup.KeepLocal {
+		if err := os.Remove(encFile); err != nil {
+			log.Printf("Failed to remove local encrypted dump file: %v", err)
+		} else {
+			fmt.Println("Removed local encrypted dump file:", encFile)
+		}
+		if err := os.Remove(keyFile); err != nil {
+			log.Printf("Failed to remove local encrypted key file: %v", err)
+		} else {
+			fmt.Println("Removed local encrypted key file:", keyFile)
+		}
+	} else {
+		fmt.Println("Local copies retained as per configuration.")
+	}
 }
 
 func decryptMode(args []string) {

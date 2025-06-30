@@ -5,10 +5,10 @@ database:
   password: postgres
   dbname: mydb
 
-backup:
-  public_key: ./public.pem
+backup_config:
+  public_key: ~/.ssh/public.pem
   destination: ./backup
-
+  keep_local: false
 
 storage:
   provider: s3

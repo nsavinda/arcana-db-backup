@@ -17,7 +17,8 @@ type Config struct {
 	Backup struct {
 		PublicKey   string `yaml:"public_key"`
 		Destination string `yaml:"destination"`
-	} `yaml:"backup"`
+		KeepLocal   bool   `yaml:"keep_local"`
+	} `yaml:"backup_config"`
 	Storage struct {
 		Provider  string `yaml:"provider"`
 		Bucket    string `yaml:"bucket"`
