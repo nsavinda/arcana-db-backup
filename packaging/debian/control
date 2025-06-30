@@ -1,0 +1,7 @@
+Package: arcanadbbackup
+Version: VERSION
+Section: utils
+Priority: optional
+Architecture: ARCH
+Maintainer: Nirmal Savinda <nirmalsavinda29@gmail.com>
+Description: Secure database backup tool

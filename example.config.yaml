@@ -1,9 +1,9 @@
 database:
   host: localhost
-  port: 4002
+  port: 5432
   user: postgres
   password: postgres
-  dbname: mydb
+  dbname: postgres
 
 backup_config:
   public_key: ~/.ssh/public.pem
