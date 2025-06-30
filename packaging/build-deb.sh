@@ -2,7 +2,8 @@
 set -e
 
 APPNAME="arcanadbbackup"
-VERSION="${1:-0.1.0}"
+VERSION="${1:-0.1.0}" # remove "v" prefix for Debian packaging
+VERSION="${VERSION#v}" # Ensure version does not start with 'v'
 ARCH="${2:-amd64}"
 
 if [[ "$ARCH" == "amd64" ]]; then
