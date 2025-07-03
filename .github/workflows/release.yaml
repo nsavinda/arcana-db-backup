@@ -1,4 +1,4 @@
-name: Build and Upload .deb to Release
+name: Build and Upload Release Packages
 
 on:
   release:
@@ -8,7 +8,8 @@ jobs:
   build-and-upload:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -18,15 +19,23 @@ jobs:
       - name: Install dpkg-deb
         run: sudo apt-get update && sudo apt-get install -y dpkg-dev
 
-      - name: Build amd64 .deb
+      - name: Build .deb for amd64
         run: ./packaging/build-deb.sh ${{ github.ref_name }} amd64
 
-      - name: Build arm64 .deb
+      - name: Build .deb for arm64
         run: ./packaging/build-deb.sh ${{ github.ref_name }} arm64
 
-      - name: Upload .deb files to Release
+      - name: Build .rpm (x86_64) using Docker
+        run: ./packaging/build-rpm.sh ${{ github.ref_name }}
+
+      - name: Build Arch Linux package (.pkg.tar.zst) using Docker
+        run: ./packaging/build-pkgbuild.sh ${{ github.ref_name }}
+
+      - name: Upload all packages to Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             arcanadbbackup_${{ github.ref_name }}_amd64.deb
             arcanadbbackup_${{ github.ref_name }}_arm64.deb
+            build-rpm/arcanadbbackup-${{ github.ref_name }}-1.el7.x86_64.rpm
+            build-arch/arcanadbbackup-${{ github.ref_name }}-1-x86_64.pkg.tar.zst

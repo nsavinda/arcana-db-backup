@@ -1,0 +1,18 @@
+pkgname=arcanadbbackup
+pkgver=VERSION
+pkgrel=1
+pkgdesc='Arcana DB backup tool'
+arch=('x86_64')
+url='https://github.com/nsavinda/arcana-db-backup'
+license=('MIT')
+depends=()
+source=()
+build() {
+  cd "$srcdir"
+  GOOS=linux GOARCH=amd64 go build -o arcanadbbackup /src/main.go
+}
+package() {
+  install -Dm755 "$srcdir/arcanadbbackup" "$pkgdir/usr/local/bin/arcanadbbackup"
+  install -Dm644 /src/example.config.yaml "$pkgdir/etc/arcanadbbackup/config.yaml"
+}
+sha256sums=()
