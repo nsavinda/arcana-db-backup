@@ -1,38 +1,23 @@
 #!/bin/bash
 set -e
 
+RAW_VERSION="$1"  # Example: v0.3.0
+VERSION="${RAW_VERSION#v}"
 APPNAME="arcanadbbackup"
-VERSION="${1:-0.1.0}"
-VERSION="${VERSION#v}" # strip "v" if prefixed
+BUILD_DIR="build-rpm"
+RPMBUILD_DIR="/root/rpmbuild"
 
-WORKDIR=$(pwd)
-BUILDROOT="$WORKDIR/build-rpm"
-SRCDIR="$BUILDROOT/${APPNAME}-v${VERSION}"
+mkdir -p "$BUILD_DIR"
 
-# Cleanup
-rm -rf "$BUILDROOT"
-mkdir -p "$SRCDIR"
-
-# Copy source files
-cp main.go example.config.yaml README.md LICENSE "$SRCDIR/"
-# If needed: cp -r config/ database/ encryption/ storage/ "$SRCDIR/"
-
-# Create source tar.gz
-tar czf "$BUILDROOT/${APPNAME}-v${VERSION}.tar.gz" -C "$BUILDROOT" "${APPNAME}-v${VERSION}"
-
-# Prepare spec
-SPECFILE="$BUILDROOT/${APPNAME}.spec"
-sed "s/VERSION/v${VERSION}/g" packaging/rpm/arcanadbbackup.spec.template > "$SPECFILE"
-
-# Build in Docker (CentOS)
-docker run --rm -v "$BUILDROOT":/build -w /build centos:7 bash -c "
-  yum install -y rpm-build golang &&
-  mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS} &&
-  cp /build/${APPNAME}-v${VERSION}.tar.gz /root/rpmbuild/SOURCES/ &&
-  cp /build/${APPNAME}.spec /root/rpmbuild/SPECS/ &&
-  cd /root &&
-  rpmbuild -ba rpmbuild/SPECS/${APPNAME}.spec &&
-  cp rpmbuild/RPMS/x86_64/${APPNAME}-v${VERSION}-1.el7.x86_64.rpm /build/
+docker run --rm -v "$PWD":/src -w /src rockylinux:9 bash -c "
+  dnf install -y golang rpm-build &&
+  mkdir -p $RPMBUILD_DIR/{BUILD,RPMS,SOURCES,SPECS,SRPMS} &&
+  cp packaging/rpm/${APPNAME}.spec $RPMBUILD_DIR/SPECS/ &&
+  cp main.go example.config.yaml $RPMBUILD_DIR/SOURCES/ &&
+  sed -i 's/VERSION/${VERSION}/g' $RPMBUILD_DIR/SPECS/${APPNAME}.spec &&
+  cd $RPMBUILD_DIR &&
+  rpmbuild -ba SPECS/${APPNAME}.spec &&
+  cp RPMS/x86_64/${APPNAME}-${VERSION}-1.el9.x86_64.rpm /src/${BUILD_DIR}/
 "
 
-echo "✅ RPM built: $BUILDROOT/${APPNAME}-v${VERSION}-1.el7.x86_64.rpm"
+echo "✅ RPM package built: ${BUILD_DIR}/${APPNAME}-${VERSION}-1.el9.x86_64.rpm"
