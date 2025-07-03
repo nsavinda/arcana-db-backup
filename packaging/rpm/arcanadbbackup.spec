@@ -23,7 +23,7 @@ mkdir -p %{buildroot}/usr/local/bin
 install -m 755 arcanadbbackup %{buildroot}/usr/local/bin/arcanadbbackup
 
 mkdir -p %{buildroot}/etc/arcanadbbackup
-install -m 644 config.yaml %{buildroot}/etc/arcanadbbackup/config.yaml
+install -m 644 example.config.yaml %{buildroot}/etc/arcanadbbackup/config.yaml
 
 %files
 %license LICENSE
