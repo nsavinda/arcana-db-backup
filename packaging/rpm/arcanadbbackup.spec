@@ -1,3 +1,5 @@
+%global debug_package %{nil}
+
 Name:           arcanadbbackup
 Version:        VERSION
 Release:        1%{?dist}
@@ -7,29 +9,31 @@ License:        MIT
 URL:            https://github.com/nsavinda/arcana-db-backup
 Source0:        %{name}-%{version}.tar.gz
 
-BuildRequires:  golang
+BuildRequires:  golang >= 1.16
+Requires:       postgresql-client
 
 %description
 Arcana DB backup tool written in Go for PostgreSQL backups.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}
 
 %build
-GOOS=linux GOARCH=amd64 go build -o arcanadbbackup main.go
+# No need for tar extraction here, %setup already handles it
+GOOS=linux GOARCH=amd64 go build -o arcanadbbackup .
 
 %install
-mkdir -p %{buildroot}/usr/local/bin
-install -m 755 arcanadbbackup %{buildroot}/usr/local/bin/arcanadbbackup
+install -d %{buildroot}%{_bindir}
+install -m 755 arcanadbbackup %{buildroot}%{_bindir}/arcanadbbackup
 
-mkdir -p %{buildroot}/etc/arcanadbbackup
-install -m 644 example.config.yaml %{buildroot}/etc/arcanadbbackup/config.yaml
+install -d %{buildroot}%{_sysconfdir}/arcanadbbackup
+install -m 644 example.config.yaml %{buildroot}%{_sysconfdir}/arcanadbbackup/config.yaml
 
 %files
 %license LICENSE
 %doc README.md
-/usr/local/bin/arcanadbbackup
-/etc/arcanadbbackup/config.yaml
+%{_bindir}/arcanadbbackup
+%config(noreplace) %{_sysconfdir}/arcanadbbackup/config.yaml
 
 %changelog
 * Wed Jul 03 2025 Nirmal Savinda <nirmalsavinda29@gmail.com> - VERSION-1
