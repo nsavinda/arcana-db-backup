@@ -1,6 +1,6 @@
 module arcana-db-backup
 
-go 1.24.4
+go 1.23.9
 
 require (
 	github.com/aws/aws-sdk-go v1.55.7 // indirect
