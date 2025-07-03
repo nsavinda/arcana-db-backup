@@ -23,6 +23,12 @@ A modular, secure Go-based tool for **database backup, encryption, and compressi
 
 ## Getting Started
 
+### Installation
+
+Download the latest release from [GitHub Releases](https://github.com/nsavinda/arcana-db-backup/releases) or build it from source by following the steps below.
+
+
+
 ### 1. **Clone the repository**
 
 ```bash
@@ -39,6 +45,13 @@ make keygen
 # Produces: private.pem (private key), public.pem (public key)
 ```
 
+or manually using OpenSSL:
+
+```bash
+openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:4096
+openssl rsa -in private.pem -pubout -out public.pem
+```
+
 **Keep your `private.pem` safe!**
 Your public key (`public.pem`) is used for encryption.
 
@@ -52,20 +65,22 @@ Edit `/etc/arcanadbbackup/config.yaml` or create a custom config file:
 database:
   host: localhost
   port: 5432
-  user: youruser
-  password: yourpassword
-  dbname: yourdb
+  user: postgres
+  password: postgres
+  dbname: postgres
 
-backup:
-  public_key: ./public.pem
+backup_config:
+  public_key: ~/.ssh/public.pem
   destination: ./backup
+  keep_local: false
 
 storage:
-  bucket: your-bucket-name
+  provider: s3
+  bucket: my-bucket
   region: us-east-1
-  access_key: YOUR_ACCESS_KEY
-  secret_key: YOUR_SECRET_KEY
-  endpoint: https://s3-compatible-endpoint
+  access_key: 
+  secret_key: 
+  endpoint: https://nyc3.digitaloceanspaces.com  # Use S3 endpoint or DigitalOcean Spaces endpoint
 ```
 
 ---
