@@ -111,7 +111,7 @@ func EncryptFileWithAES(aesKey []byte, inputPath, outputPath string) error {
 		return err
 	}
 	ciphertext := aesgcm.Seal(nonce, nonce, plaintext, nil)
-	return os.WriteFile(outputPath, ciphertext, 0644)
+	return os.WriteFile(outputPath, ciphertext, 0600)
 }
 
 // DecryptFileWithAES decrypts and decompresses the file, writing the plaintext to outputPath.
@@ -139,7 +139,7 @@ func DecryptFileWithAES(aesKey []byte, inputPath, outputPath string) error {
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(tmpGz, plaintext, 0644)
+	err = os.WriteFile(tmpGz, plaintext, 0600)
 	if err != nil {
 		return err
 	}

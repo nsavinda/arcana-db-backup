@@ -32,7 +32,7 @@ func encryptMode() {
 	}
 
 	if _, err := os.Stat(cfg.Backup.Destination); os.IsNotExist(err) {
-		if err := os.MkdirAll(cfg.Backup.Destination, 0755); err != nil {
+		if err := os.MkdirAll(cfg.Backup.Destination, 0750); err != nil {
 			log.Fatalf("Failed to create backup directory: %v", err)
 		}
 	}
