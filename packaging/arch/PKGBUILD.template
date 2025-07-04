@@ -1,3 +1,4 @@
+# Maintainer: Nirmal Savinda <nirmalsavinda29@gmail.com>
 pkgname=arcanadbbackup
 pkgver=VERSION
 pkgrel=1
@@ -5,14 +6,24 @@ pkgdesc='Arcana DB backup tool'
 arch=('x86_64')
 url='https://github.com/nsavinda/arcana-db-backup'
 license=('MIT')
+
 depends=()
-source=()
+makedepends=('go')
+source=("${pkgname}-${pkgver}.tar.gz")
+sha256sums=('SKIP')  # Replace with actual SHA256 sum for production
+
 build() {
-  cd "$srcdir"
-  GOOS=linux GOARCH=amd64 go build -o arcanadbbackup /src/main.go
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  export GOPATH="$srcdir/go"
+  mkdir -p "$GOPATH/src/github.com/nsavinda/arcana-db-backup"
+  cp -r . "$GOPATH/src/github.com/nsavinda/arcana-db-backup/"
+  cd "$GOPATH/src/github.com/nsavinda/arcana-db-backup"
+  GOOS=linux GOARCH=amd64 go build -o arcanadbbackup .
 }
+
 package() {
-  install -Dm755 "$srcdir/arcanadbbackup" "$pkgdir/usr/local/bin/arcanadbbackup"
-  install -Dm644 /src/example.config.yaml "$pkgdir/etc/arcanadbbackup/config.yaml"
+  install -Dm755 "${srcdir}/go/src/github.com/nsavinda/arcana-db-backup/arcanadbbackup" "${pkgdir}/usr/bin/arcanadbbackup"
+  install -Dm644 "${srcdir}/${pkgname}-${pkgver}/example.config.yaml" "${pkgdir}/etc/arcanadbbackup/config.yaml"
+  install -Dm644 "${srcdir}/${pkgname}-${pkgver}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 "${srcdir}/${pkgname}-${pkgver}/README.md" "${pkgdir}/usr/share/doc/${pkgname}/README.md"
 }
-sha256sums=()
