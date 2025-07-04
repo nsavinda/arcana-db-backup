@@ -29,7 +29,7 @@ jobs:
         run: ./packaging/build-rpm.sh ${{ github.ref_name }}
 
       - name: Build Arch Linux package (.pkg.tar.zst) using Docker
-        run: ./packaging/build-pkgbuild.sh ${{ github.ref_name }}
+        run: ./packaging/build-arch.sh ${{ github.ref_name }}
 
       - name: Upload all packages to Release
         uses: softprops/action-gh-release@v2
