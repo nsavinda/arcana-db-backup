@@ -68,6 +68,3 @@ else
     echo "Error: Package not found"
     exit 1
 fi
-
-# Clean up
-rm -f "$PKGBUILD_PATH" "$TARBALL_NAME"
