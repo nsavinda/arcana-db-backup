@@ -37,5 +37,5 @@ jobs:
           files: |
             arcanadbbackup_${{ github.ref_name }}_amd64.deb
             arcanadbbackup_${{ github.ref_name }}_arm64.deb
-            build-rpm/arcanadbbackup-${{ github.ref_name }}-1.el7.x86_64.rpm
-            build-arch/arcanadbbackup-${{ github.ref_name }}-1-x86_64.pkg.tar.zst
+            build-rpm/arcanadbbackup-${{ github.ref_name }}-1.el9.x86_64.rpm
+            arcanadbbackup-${{ github.ref_name }}-1-x86_64.pkg.tar.zst
