@@ -56,11 +56,11 @@ docker run --rm -v "$SRC_DIR:/src" -w /src rockylinux:9 bash -c "
     cp /src/${BUILD_DIR}/${TARBALL_NAME} $RPMBUILD_DIR/SOURCES/ &&
     sed \"s/VERSION/${VERSION}/g\" /src/packaging/rpm/${APPNAME}.spec > $RPMBUILD_DIR/SPECS/${APPNAME}.spec &&
     rpmbuild -ba $RPMBUILD_DIR/SPECS/${APPNAME}.spec &&
-    cp $RPMBUILD_DIR/RPMS/x86_64/${APPNAME}-${VERSION}-1.el9.x86_64.rpm /src/${BUILD_DIR}/
+    cp $RPMBUILD_DIR/RPMS/x86_64/${APPNAME}-${VERSION}-1.el9.x86_64.rpm /src/${BUILD_DIR}/$APPNAME-v${VERSION}-1.el9.x86_64.rpm
 "
 
 if [ $? -eq 0 ]; then
-    echo "✅ RPM package built: ${BUILD_DIR}/${APPNAME}-${VERSION}-1.el9.x86_64.rpm"
+    echo "✅ RPM package built: ${BUILD_DIR}/${APPNAME}-v${VERSION}-1.el9.x86_64.rpm"
 else
     echo "Error: RPM build failed"
     exit 1

@@ -62,7 +62,7 @@ docker run --rm -v "$SRC_DIR:/src" -w /src archlinux:base-devel bash -c "
 
 # Move the built package
 if [ -f "${APPNAME}-${VERSION}-1-x86_64.pkg.tar.zst" ]; then
-    mv "${APPNAME}-${VERSION}-1-x86_64.pkg.tar.zst" "${APPNAME}-v${VERSION}-1-x86_64.pkg.tar.zst"
+    sudo mv "${APPNAME}-${VERSION}-1-x86_64.pkg.tar.zst" "${APPNAME}-v${VERSION}-1-x86_64.pkg.tar.zst"
     echo "✅ Arch package built: ${APPNAME}-v${VERSION}-1-x86_64.pkg.tar.zst"
 else
     echo "Error: Package not found"
