@@ -2,6 +2,9 @@
 
 A modular, secure Go-based tool for **database backup, encryption, and compression** with easy restore and cloud upload options.
 
+<!-- Image -->
+![Arcana DB Backup Tool](https://raw.githubusercontent.com/nsavinda/database-backup-tool/main/Arcana-Backup.png)
+
 ## Features
 
 - **Database backup:** Dumps your database to a file  
