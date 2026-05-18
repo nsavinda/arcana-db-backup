@@ -46,15 +46,6 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
-      minio:
-        image: bitnami/minio:latest
-        env:
-          MINIO_ROOT_USER: minioadmin
-          MINIO_ROOT_PASSWORD: minioadmin
-          MINIO_DEFAULT_BUCKETS: arcana-test
-        ports:
-          - 9000:9000
-
     steps:
       - uses: actions/checkout@v4
 
@@ -68,8 +59,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client
 
-      - name: Wait for MinIO
+      - name: Start MinIO
         run: |
+          docker run -d --name minio \
+            -p 9000:9000 \
+            -e MINIO_ROOT_USER=minioadmin \
+            -e MINIO_ROOT_PASSWORD=minioadmin \
+            quay.io/minio/minio:latest server /data --address ':9000'
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:9000/minio/health/ready >/dev/null; then
               echo "minio ready"
@@ -77,7 +73,9 @@ jobs:
             fi
             sleep 2
           done
-          echo "minio did not become ready"; exit 1
+          echo "minio did not become ready"
+          docker logs minio || true
+          exit 1
 
       - name: Seed test data
         env:
