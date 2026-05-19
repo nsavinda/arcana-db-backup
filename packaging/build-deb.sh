@@ -19,14 +19,19 @@ echo "Building $APPNAME version $VERSION for $ARCH..."
 
 # 1. Clean previous builds
 rm -rf dist
-mkdir -p dist/$APPNAME/usr/local/bin
+mkdir -p dist/$APPNAME/usr/bin
 mkdir -p dist/$APPNAME/etc/$APPNAME
+mkdir -p dist/$APPNAME/usr/share/doc/$APPNAME
 
 # 2. Build Go binary
-GOOS=linux GOARCH=$GOARCH go build -o dist/$APPNAME/usr/local/bin/$APPNAME main.go
+GOOS=linux GOARCH=$GOARCH go build -o dist/$APPNAME/usr/bin/$APPNAME main.go
 
 # 3. Copy config (edit as needed)
 cp example.config.yaml dist/$APPNAME/etc/$APPNAME/config.yaml
+
+# 3a. Ship LICENSE and README so .deb has parity with .rpm / .pkg.tar.zst
+cp LICENSE dist/$APPNAME/usr/share/doc/$APPNAME/copyright
+cp README.md dist/$APPNAME/usr/share/doc/$APPNAME/README.md
 
 # 4. Set up DEBIAN control files
 mkdir -p dist/$APPNAME/DEBIAN
