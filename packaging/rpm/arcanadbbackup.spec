@@ -9,8 +9,7 @@ License:        MIT
 URL:            https://github.com/nsavinda/arcana-db-backup
 Source0:        %{name}-%{version}.tar.gz
 
-BuildRequires:  golang >= 1.16
-Requires:       postgresql-client
+BuildRequires:  golang >= 1.24
 
 %description
 Arcana DB backup tool written in Go for PostgreSQL backups.
@@ -36,5 +35,8 @@ install -m 644 example.config.yaml %{buildroot}%{_sysconfdir}/arcanadbbackup/con
 %config(noreplace) %{_sysconfdir}/arcanadbbackup/config.yaml
 
 %changelog
+* Tue May 19 2026 Nirmal Savinda <nirmalsavinda29@gmail.com> - 1.0.0-1
+- First stable release
+
 * Wed Jul 03 2025 Nirmal Savinda <nirmalsavinda29@gmail.com> - VERSION-1
 - Initial RPM release
