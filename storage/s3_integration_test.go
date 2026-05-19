@@ -61,10 +61,9 @@ func ensureBucket(t *testing.T, cfg storage.S3Config) {
 	if err == nil {
 		return
 	}
-	// Tolerate "already exists / owned by you".
+	// Tolerate only "already owned by you".
 	var owned *s3types.BucketAlreadyOwnedByYou
-	var exists *s3types.BucketAlreadyExists
-	if errors.As(err, &owned) || errors.As(err, &exists) {
+	if errors.As(err, &owned) {
 		return
 	}
 	t.Fatalf("CreateBucket: %v", err)
