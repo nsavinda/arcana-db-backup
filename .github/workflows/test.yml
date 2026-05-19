@@ -1,0 +1,101 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Run unit tests
+        run: go test -race ./...
+
+  integration:
+    name: Integration tests (Postgres + MinIO)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: arcana
+          POSTGRES_PASSWORD: arcana
+          POSTGRES_DB: arcana_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U arcana"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install postgresql-client (for pg_dump)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio \
+            -p 9000:9000 \
+            -e MINIO_ROOT_USER=minioadmin \
+            -e MINIO_ROOT_PASSWORD=minioadmin \
+            quay.io/minio/minio:RELEASE.2024-01-16T16-07-38Z server /data --address ':9000'
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:9000/minio/health/ready >/dev/null; then
+              echo "minio ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "minio did not become ready"
+          docker logs minio || true
+          exit 1
+
+      - name: Seed test data
+        env:
+          PGPASSWORD: arcana
+        run: |
+          psql -h 127.0.0.1 -U arcana -d arcana_test -c "
+            CREATE TABLE IF NOT EXISTS items (id serial primary key, name text not null);
+            INSERT INTO items (name) VALUES ('alpha'), ('beta'), ('gamma');
+          "
+
+      - name: Run integration tests
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGUSER: arcana
+          PGPASSWORD: arcana
+          PGDATABASE: arcana_test
+          S3_ENDPOINT: http://127.0.0.1:9000
+          S3_BUCKET: arcana-test
+          S3_REGION: us-east-1
+          S3_ACCESS_KEY: minioadmin
+          S3_SECRET_KEY: minioadmin
+        run: go test -tags=integration -race ./...
