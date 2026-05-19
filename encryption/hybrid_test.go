@@ -107,8 +107,14 @@ func TestDecryptWithWrongKeyFails(t *testing.T) {
 		t.Fatalf("write src: %v", err)
 	}
 
-	good, _ := GenerateRandomKey(32)
-	bad, _ := GenerateRandomKey(32)
+	good, err := GenerateRandomKey(32)
+	if err != nil {
+		t.Fatalf("GenerateRandomKey good: %v", err)
+	}
+	bad, err := GenerateRandomKey(32)
+	if err != nil {
+		t.Fatalf("GenerateRandomKey bad: %v", err)
+	}
 
 	enc := filepath.Join(dir, "dump.enc")
 	if err := EncryptFileWithAES(good, src, enc); err != nil {
