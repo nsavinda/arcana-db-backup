@@ -65,7 +65,7 @@ jobs:
             -p 9000:9000 \
             -e MINIO_ROOT_USER=minioadmin \
             -e MINIO_ROOT_PASSWORD=minioadmin \
-            quay.io/minio/minio:latest server /data --address ':9000'
+            quay.io/minio/minio:RELEASE.2024-01-16T16-07-38Z server /data --address ':9000'
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:9000/minio/health/ready >/dev/null; then
               echo "minio ready"
