@@ -52,11 +52,17 @@ func Upload(cfg S3Config, filename string) error {
 	}
 	defer file.Close()
 
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return err
+	}
+
 	_, err = client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(cfg.Bucket),
-		Key:         aws.String(filename),
-		Body:        file,
-		ContentType: aws.String("application/octet-stream"),
+		Bucket:        aws.String(cfg.Bucket),
+		Key:           aws.String(filename),
+		Body:          file,
+		ContentLength: aws.Int64(fileInfo.Size()),
+		ContentType:   aws.String("application/octet-stream"),
 	})
 	return err
 }
